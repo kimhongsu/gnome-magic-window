@@ -34,7 +34,7 @@ class Extension {
       },
       {
         shortcut: "<Super>f",
-        title: "Navigator",
+        title: "firefox",
         command: "/usr/local/bin/firefox",
       },
       {
@@ -51,6 +51,11 @@ class Extension {
         shortcut: "<Super>c",
         title: "Google-chrome",
         command: "/usr/bin/google-chrome",
+      },
+      {
+        shortcut: "<Super>s",
+        title: "sublime_merge",
+        command: "/opt/sublime_merge/sublime_merge",
       },
     ];
 
@@ -150,7 +155,7 @@ class Extension {
     // For debugging:
     // Util.spawn(['/bin/bash', '-c', `echo '${this.debug()}' > /tmp/test`]);
     // throw new Error(this.debug());
-    log(this.debug());
+    // log(this.debug());
 
     const current = this.get_active_window();
     const magic = this.find_magic_window(title);
