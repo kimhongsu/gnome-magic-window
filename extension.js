@@ -29,27 +29,27 @@ class Extension {
     const bindings = [
       {
         shortcut: "<Super>v",
-        title: "Visual Studio Code",
+        title: "Code",
         command: "/usr/bin/code",
       },
       {
         shortcut: "<Super>f",
-        title: "Firefox Web Browser",
+        title: "firefox",
         command: "/usr/local/bin/firefox",
       },
       {
         shortcut: "<Super>n",
-        title: "Notion",
+        title: "notion-app",
         command: "/usr/bin/notion-app",
       },
       {
         shortcut: "<Super>t",
-        title: "Tabby",
+        title: "tabby",
         command: "/usr/bin/tabby",
       },
       {
         shortcut: "<Super>c",
-        title: "Google Chrome",
+        title: "Google-chrome",
         command: "/usr/bin/google-chrome",
       },
     ];
