@@ -24,34 +24,34 @@ class Extension {
   enable() {
     const bindings = [
       {
-        shortcut: "<Super>v",
-        title: "Code",
-        command: "/usr/bin/code",
+        shortcut: '<Super>v',
+        title: 'Code',
+        command: '/usr/bin/code',
       },
       {
-        shortcut: "<Super>f",
-        title: "firefox",
-        command: "/usr/local/bin/firefox",
+        shortcut: '<Super>f',
+        title: 'firefox',
+        command: '/usr/local/bin/firefox',
       },
       {
-        shortcut: "<Super>n",
-        title: "notion-app",
-        command: "/usr/bin/notion-app",
+        shortcut: '<Super>n',
+        title: 'notion-app',
+        command: '/usr/bin/notion-app',
       },
       {
-        shortcut: "<Super>t",
-        title: "tabby",
-        command: "/usr/bin/tabby",
+        shortcut: '<Super>t',
+        title: 'tabby',
+        command: '/usr/bin/tabby',
       },
       {
-        shortcut: "<Super>c",
-        title: "Google-chrome",
-        command: "/usr/bin/google-chrome",
+        shortcut: '<Super>c',
+        title: 'Google-chrome',
+        command: '/usr/bin/google-chrome',
       },
       {
-        shortcut: "<Super>s",
-        title: "sublime_merge",
-        command: "/opt/sublime_merge/sublime_merge",
+        shortcut: '<Super>s',
+        title: 'sublime_merge',
+        command: '/opt/sublime_merge/sublime_merge',
       },
     ];
 
@@ -67,37 +67,23 @@ class Extension {
       </node>`,
       this
     );
-    this._dbus.export(
-      Gio.DBus.session,
-      "/org/gnome/Shell/Extensions/GnomeMagicWindow"
-    );
+    this._dbus.export(Gio.DBus.session, '/org/gnome/Shell/Extensions/GnomeMagicWindow');
 
     this.actions = {};
 
     global.display.connect(
-      "accelerator-activated",
+      'accelerator-activated',
       (display, action, deviceId, timestamp) => {
-        // if (action === this._action) {
-        //   return this.magic_key_pressed(TITLE, COMMAND);
-        // }
         const binding = this.actions[action];
         return this.magic_key_pressed(binding.title, binding.command);
       }
     );
-    // this._action = global.display.grab_accelerator(SHORTCUT, 0);
-    // if (this._action !== Meta.KeyBindingAction.NONE) {
-    //   const name = Meta.external_binding_name_for_action(this._action);
-    //   Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
-    // }
-    bindings.map((binding) => {
+    bindings.map(binding => {
       const action = global.display.grab_accelerator(binding.shortcut, 0);
       if (action !== Meta.KeyBindingAction.NONE) {
         let name = Meta.external_binding_name_for_action(action);
-        log(`external_binding_name_for_action: ${name}`);
         Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
         this.actions[action] = binding;
-        log(`action: ${action}`);
-        log(`binding: ${binding.title}`);
       }
     });
   }
@@ -129,12 +115,12 @@ class Extension {
   get_windows() {
     return global
       .get_window_actors()
-      .map((w) => ({
+      .map(w => ({
         id: w.toString(),
         ref: w,
         title: w.get_meta_window().get_wm_class(),
       }))
-      .filter((w) => !w.title.includes("Gnome-shell"));
+      .filter(w => !w.title.includes('Gnome-shell'));
   }
 
   get_active_window() {
@@ -142,7 +128,7 @@ class Extension {
   }
 
   find_magic_window(title) {
-    return this.get_windows().filter((w) =>
+    return this.get_windows().filter(w =>
       w.title.toLowerCase().includes(title.toLowerCase())
     )[0];
   }
