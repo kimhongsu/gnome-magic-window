@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-const SHORTCUT = 'F12';
-const TITLE = 'Terminator';
-const COMMAND = '/usr/bin/terminator';
+const SHORTCUT = "<Super>v";
+const TITLE = "Visual Studio Code";
+const COMMAND = "/usr/bin/code";
 
 const { Gio } = imports.gi;
 const Main = imports.ui.main;
@@ -26,7 +26,36 @@ const Util = imports.misc.util;
 
 class Extension {
   enable() {
-    this._dbus = Gio.DBusExportedObject.wrapJSObject(`
+    const bindings = [
+      {
+        shortcut: "<Super>v",
+        title: "Visual Studio Code",
+        command: "/usr/bin/code",
+      },
+      {
+        shortcut: "<Super>f",
+        title: "Firefox Web Browser",
+        command: "/usr/local/bin/firefox",
+      },
+      {
+        shortcut: "<Super>n",
+        title: "Notion",
+        command: "/usr/bin/notion-app",
+      },
+      {
+        shortcut: "<Super>t",
+        title: "Tabby",
+        command: "/usr/bin/tabby",
+      },
+      {
+        shortcut: "<Super>c",
+        title: "Google Chrome",
+        command: "/usr/bin/google-chrome",
+      },
+    ];
+
+    this._dbus = Gio.DBusExportedObject.wrapJSObject(
+      `
       <node>
         <interface name="org.gnome.Shell.Extensions.GnomeMagicWindow">
           <method name="magic_key_pressed">
@@ -34,22 +63,40 @@ class Extension {
             <arg type="s" direction="in" name="command"/>
           </method>
         </interface>
-      </node>`, this);
-    this._dbus.export(Gio.DBus.session, '/org/gnome/Shell/Extensions/GnomeMagicWindow');
+      </node>`,
+      this
+    );
+    this._dbus.export(
+      Gio.DBus.session,
+      "/org/gnome/Shell/Extensions/GnomeMagicWindow"
+    );
+
+    this.actions = {};
 
     global.display.connect(
-      'accelerator-activated',
+      "accelerator-activated",
       (display, action, deviceId, timestamp) => {
-        if (action === this._action) {
-          return this.magic_key_pressed(TITLE, COMMAND);
-        }
+        // if (action === this._action) {
+        //   return this.magic_key_pressed(TITLE, COMMAND);
+        // }
+        const binding = this.actions[action];
+        return this.magic_key_pressed(binding.title, binding.command);
       }
     );
-    this._action = global.display.grab_accelerator(SHORTCUT, 0);
-    if (this._action !== Meta.KeyBindingAction.NONE) {
-      const name = Meta.external_binding_name_for_action(this._action);
-      Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
-    }
+    // this._action = global.display.grab_accelerator(SHORTCUT, 0);
+    // if (this._action !== Meta.KeyBindingAction.NONE) {
+    //   const name = Meta.external_binding_name_for_action(this._action);
+    //   Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
+    // }
+    bindings.map((binding) => {
+      const action = global.display.grab_accelerator(binding.shortcut, 0);
+      if (action !== Meta.KeyBindingAction.NONE) {
+        let name = Meta.external_binding_name_for_action(action);
+        log(`name`);
+        Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
+        this.actions[action] = binding;
+      }
+    });
   }
 
   disable() {
@@ -57,23 +104,34 @@ class Extension {
     this._dbus.unexport();
     delete this._dbus;
 
-    global.display.ungrab_accelerator(this._action);
-    delete this._action;
+    for (const [action, _] of Object.entries(this.actions)) {
+      global.display.ungrab_accelerator(action);
+      delete this.actions[action];
+    }
+    // global.display.ungrab_accelerator(this._action);
+    // delete this._action;
   }
 
   debug() {
-    return JSON.stringify({
-      windows: this.get_windows(),
-      active_window: this.get_active_window(),
-    }, null, 2);
+    return JSON.stringify(
+      {
+        windows: this.get_windows(),
+        active_window: this.get_active_window(),
+      },
+      null,
+      2
+    );
   }
 
   get_windows() {
-    return global.get_window_actors()
-           .map(w => ({id: w.toString(),
-                       ref: w,
-                       title: w.get_meta_window().get_wm_class()}))
-           .filter(w => !w.title.includes('Gnome-shell'));
+    return global
+      .get_window_actors()
+      .map((w) => ({
+        id: w.toString(),
+        ref: w,
+        title: w.get_meta_window().get_wm_class(),
+      }))
+      .filter((w) => !w.title.includes("Gnome-shell"));
   }
 
   get_active_window() {
@@ -81,8 +139,9 @@ class Extension {
   }
 
   find_magic_window(title) {
-    return this.get_windows()
-           .filter(w => w.title.toLowerCase().includes(title.toLowerCase()))[0];
+    return this.get_windows().filter((w) =>
+      w.title.toLowerCase().includes(title.toLowerCase())
+    )[0];
   }
 
   magic_key_pressed(title, command) {
@@ -97,15 +156,13 @@ class Extension {
     if (!magic) {
       if (!this._launching) {
         this._launching = true;
-        Mainloop.timeout_add(1000, () => this._launching = false, 1000);
+        Mainloop.timeout_add(1000, () => (this._launching = false), 1000);
         Util.spawnCommandLine(command);
         this._last_not_magic = current;
       }
-
     } else if (current && current.id !== magic.id) {
       Main.activateWindow(magic.ref.get_meta_window());
       this._last_not_magic = current;
-
     } else if (this._last_not_magic) {
       Main.activateWindow(this._last_not_magic.ref.get_meta_window());
     }
