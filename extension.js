@@ -92,9 +92,11 @@ class Extension {
       const action = global.display.grab_accelerator(binding.shortcut, 0);
       if (action !== Meta.KeyBindingAction.NONE) {
         let name = Meta.external_binding_name_for_action(action);
-        log(`name`);
+        log(`external_binding_name_for_action: ${name}`);
         Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
         this.actions[action] = binding;
+        log(`action: ${action}`);
+        log(`binding: ${binding.title}`);
       }
     });
   }
