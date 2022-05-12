@@ -13,10 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-const SHORTCUT = "<Super>v";
-const TITLE = "Visual Studio Code";
-const COMMAND = "/usr/bin/code";
-
 const { Gio } = imports.gi;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
