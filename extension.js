@@ -49,6 +49,11 @@ class Extension {
         command: '/usr/bin/google-chrome',
       },
       {
+        shortcut: '<Super>e',
+        title: 'Microsoft Edge',
+        command: '/usr/bin/microsoft-edge',
+      },
+      {
         shortcut: '<Super>s',
         title: 'sublime_merge',
         command: '/opt/sublime_merge/sublime_merge',
