@@ -50,7 +50,7 @@ class Extension {
       },
       {
         shortcut: '<Super>e',
-        title: 'Microsoft Edge',
+        title: 'Microsoft-edge',
         command: '/usr/bin/microsoft-edge',
       },
       {
