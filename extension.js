@@ -55,7 +55,7 @@ class Extension {
       },
       {
         shortcut: '<Super>s',
-        title: 'sublime_merge',
+        title: 'merge',
         command: '/opt/sublime_merge/sublime_merge',
       },
     ];
