@@ -58,6 +58,11 @@ class Extension {
         title: 'merge',
         command: '/opt/sublime_merge/sublime_merge',
       },
+      {
+        shortcut: '<Super>m',
+        title: 'telegram',
+        command: '/usr/bin/telegram-desktop',
+      },
     ];
 
     this._dbus = Gio.DBusExportedObject.wrapJSObject(
