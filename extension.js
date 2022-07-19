@@ -63,6 +63,11 @@ class Extension {
         title: 'telegram',
         command: '/usr/bin/telegram-desktop',
       },
+      {
+        shortcut: '<Super>w',
+        title: 'whale',
+        command: '/usr/bin/naver-whale',
+      },
     ];
 
     this._dbus = Gio.DBusExportedObject.wrapJSObject(
